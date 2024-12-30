@@ -75,6 +75,12 @@ def which(name, flags=os.X_OK, additional_paths=[]):
                 result.append(pext)
     return result
 
+def isdir(value):
+    if not os.path.isdir(value):
+        raise ArgumentTypeError('%s is not a directory' % value)
+
+    return value
+
 def isfile(value):
     if not os.path.isfile(value):
         raise ArgumentTypeError('%s is not a file' % value)

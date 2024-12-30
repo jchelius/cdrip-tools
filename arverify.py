@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import os
+import glob
 import re
 import sys
 import struct
@@ -131,9 +132,12 @@ def process_arguments():
     parser = \
         ArgumentParser(description='Verify lossless files with accuraterip.',
                        prog=PROGNAME)
-    parser.add_argument('paths', metavar='file', nargs='+',
-                        type=utils.isfile,
-                        help='lossless audio file')
+    # parser.add_argument('paths', metavar='file', nargs='+',
+    #                     type=utils.isfile,
+    #                     help='lossless audio file')
+    parser.add_argument('path',
+                        type=utils.isdir, 
+                        help='path to lossless audio files')
     parser.add_argument("-a", "--additional-sectors",
                         dest="additional_sectors", type=int,
                         help="additional pregap sectors beyond standard 150",
@@ -150,7 +154,7 @@ def process_arguments():
 def scan_files(tracks):
     sox_args = ['sox']+[t.path for t in tracks]+['-t', 'raw', '-']
     entries_per_track = max([len(t.ar_entries) for t in tracks])
-    ckcdda_args = [BIN['ckcdda'], entries_per_track]
+    ckcdda_args = ['./ckcdda', entries_per_track]
 
     for track in tracks:
         ckcdda_args.append(str(track.num_sectors))
@@ -365,8 +369,9 @@ def print_summary(tracks, verbose=False):
     return len(bad)
 
 def main(options):
+    paths = sorted(glob.glob(os.path.join(options.path, '*.flac')))
     utils.check_dependencies(BIN, REQUIRED)
-    tracks = [Track(path) for path in options.paths]
+    tracks = [Track(path) for path in paths]
 
     cddb, id1, id2 = get_disc_ids(tracks, options.additional_sectors,
                                   options.data_track_len, options.verbose)
