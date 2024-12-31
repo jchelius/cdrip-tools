@@ -73,6 +73,7 @@ def which(name, flags=os.X_OK, additional_paths=[]):
             pext = p + e
             if os.access(pext, flags):
                 result.append(pext)
+    print(name, result)
     return result
 
 def isdir(value):
@@ -88,10 +89,11 @@ def isfile(value):
     return value
 
 def check_dependencies(BIN, REQUIRED):
+    loc_filepath = os.path.dirname(os.path.realpath(__file__))
     for dep in BIN:
-        value = which(dep, additional_paths=[dirname(sys.argv[0])])
+        value = which(dep, additional_paths=[loc_filepath])
         altdep = BIN[dep]
-        altvalue = which(altdep, additional_paths=[dirname(sys.argv[0])]) \
+        altvalue = which(altdep, additional_paths=[loc_filepath]) \
             if altdep else None
         if not value and not altvalue:
             if dep in REQUIRED:

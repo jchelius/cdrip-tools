@@ -154,7 +154,7 @@ def process_arguments():
 def scan_files(tracks):
     sox_args = ['sox']+[t.path for t in tracks]+['-t', 'raw', '-']
     entries_per_track = max([len(t.ar_entries) for t in tracks])
-    ckcdda_args = ['./ckcdda', entries_per_track]
+    ckcdda_args = [BIN['ckcdda'], entries_per_track]
 
     for track in tracks:
         ckcdda_args.append(str(track.num_sectors))
