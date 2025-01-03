@@ -4,12 +4,10 @@ from __future__ import print_function
 import os
 import glob
 import re
-import sys
 import struct
 from argparse import ArgumentParser
 from io import BytesIO
 from tempfile import TemporaryFile
-from os.path import basename, dirname, join
 from subprocess import Popen, PIPE
 try:
     from urllib import urlopen
@@ -176,7 +174,7 @@ def scan_files(tracks):
         utils.show_status('Calculating checksums for %i files', len(tracks))
     utils.finish_status()
 
-    out, err = p.communicate()
+    out, _ = p.communicate()
     tmp.seek(0)
     out = tmp.read().decode()
     for pr in PROCS:
@@ -185,12 +183,8 @@ def scan_files(tracks):
                                   pr.returncode)
 
     lines = out.split('\n')
-    num_lines = len(lines)
 
-    results1 = []
-    results2 = []
-    results450 = []
-    for i, line in enumerate(lines):
+    for _, line in enumerate(lines):
         if not re.match('^\d', line):
             continue
 
